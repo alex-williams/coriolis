@@ -34,6 +34,7 @@ export const SHIP_FD_NAME_TO_CORIOLIS_NAME = {
   'Krait_Light': 'krait_phantom',
   'Orca': 'orca',
   'Python': 'python',
+  'Python_nx': 'python_nx',
   'SideWinder': 'sidewinder',
   'Type6': 'type_6_transporter',
   'Type7': 'type_7_transport',
