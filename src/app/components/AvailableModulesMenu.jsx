@@ -339,6 +339,7 @@ export default class AvailableModulesMenu extends TranslatedComponent {
         disabled = 1 <= ship.internal.filter(o => o.m && o.m.grp === 'mlc').length;
       }
       let active = mountedModule && mountedModule.id === m.id;
+      
       let classes = cn(m.name ? 'lc' : 'c', {
         warning: !disabled && warningFunc && warningFunc(m),
         active,
