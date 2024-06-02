@@ -173,11 +173,12 @@ export default class ModalShoppingList extends TranslatedComponent {
             "blueprint": module.m.blueprint.special.edname
           });
         }
-        for (const g in module.m.blueprint.grades) {
+        for (let g in module.m.blueprint.grades) {
           if (!module.m.blueprint.grades.hasOwnProperty(g)) {
             continue;
           }
-          if (g < module.m.blueprint.grade) {
+          // We only want the grade that the module is currently at, not every grade up to that point
+          if (Number(g) !== module.m.blueprint.grade) {
             continue;
           }
           let item = "";
@@ -200,12 +201,10 @@ export default class ModalShoppingList extends TranslatedComponent {
                 item = ship.id + "_Armour_Reactive";
                 break;
             }
-            console.log(item);
           }
           else {
             item = module.m.symbol;
           }
-
           blueprints.push({
             "item": item,
             "blueprint": module.m.blueprint.fdname,
