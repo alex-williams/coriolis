@@ -48,6 +48,7 @@ const GRPCAT = {
   'pa': 'projectiles',
   'rg': 'projectiles',
   'mr': 'ordnance',
+  'amr': 'ordnance',
   'axmr': 'experimental',
   'axmre': 'experimental',
   'rcpl': 'experimental',
@@ -109,7 +110,7 @@ const CATEGORIES = {
   // Hardpoints
   'lasers': ['pl', 'ul', 'bl'],
   'projectiles': ['mc', 'advmc', 'c', 'fc', 'pa', 'rg'],
-  'ordnance': ['mr', 'tp', 'nl'],
+  'ordnance': ['mr', 'amr', 'tp', 'nl'],
   // Utilities
   'sb': ['sb'],
   'hs': ['hs'],
@@ -259,7 +260,11 @@ export default class AvailableModulesMenu extends TranslatedComponent {
                 } else if (i.mount === 'T') {
                   mount = 'Turreted';
                 }
-                const fuzz = { grp, m: i, name: `${i.class}${i.rating}${mount ? ' '  + mount : ''} ${translate(grp)}` };
+                let special = '';
+                if (typeof(i.special) !== 'undefined') {
+                  special = `(${translate(i.special)})`;
+                }
+                const fuzz = { grp, m: i, name: `${i.class}${i.rating}${mount ? ' '  + mount : ''} ${translate(grp)} ${translate(special)}` };
                 fuzzy.push(fuzz);
               }
             }
@@ -335,7 +340,6 @@ export default class AvailableModulesMenu extends TranslatedComponent {
         disabled = 1 <= ship.internal.filter(o => o.m && o.m.grp === 'mlc').length;
       }
       let active = mountedModule && mountedModule.id === m.id;
-
       let classes = cn(m.name ? 'lc' : 'c', {
         warning: !disabled && warningFunc && warningFunc(m),
         active,

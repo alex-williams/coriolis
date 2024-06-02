@@ -22,6 +22,7 @@ jobs:
           git clone https://github.com/alex-williams/coriolis-data.git --single-branch --branch alpha
           cd coriolis-data
           npm install
+          npm start
           cd ../coriolis
           npm install
           npm run build

@@ -90,8 +90,10 @@ export default class ModalShoppingList extends TranslatedComponent {
     request
       .get('http://localhost:44405/commanders')
       .end((err, res) => {
+        this.display = 'block';
         if (err) {
           console.log(err);
+          this.display = 'none';
           return this.setState({ failed: true });
         }
         const cmdrs = JSON.parse(res.text);
@@ -171,15 +173,40 @@ export default class ModalShoppingList extends TranslatedComponent {
             "blueprint": module.m.blueprint.special.edname
           });
         }
-        for (const g in module.m.blueprint.grades) {
+        for (let g in module.m.blueprint.grades) {
           if (!module.m.blueprint.grades.hasOwnProperty(g)) {
             continue;
           }
-          if (g < module.m.blueprint.grade) {
+          // We only want the grade that the module is currently at, not every grade up to that point
+          if (Number(g) !== module.m.blueprint.grade) {
             continue;
           }
+          let item = "";
+          // If the module blueprint fdname contains "Armour_" it's a bulkhead and we need to pre-populate the item field with the correct name from the ship object
+          if (module.m.blueprint.fdname.includes("Armour_")) {
+            switch (ship.bulkheads.m.name){
+              case "Lightweight Alloy":
+                item = ship.id + "_Armour_Grade1";
+                break;
+              case "Reinforced Alloy":
+                item = ship.id + "_Armour_Grade2";
+                break;
+              case "Military Grade Composite":
+                item = ship.id + "_Armour_Grade3";
+                break;
+              case "Mirrored Surface Composite":
+                item = ship.id + "_Armour_Mirrored";
+                break;
+              case "Reactive Surface Composite":
+                item = ship.id + "_Armour_Reactive";
+                break;
+            }
+          }
+          else {
+            item = module.m.symbol;
+          }
           blueprints.push({
-            "item": module.m.symbol,
+            "item": item,
             "blueprint": module.m.blueprint.fdname,
             "grade": module.m.blueprint.grade,
             "highestGradePercentage":1.0
@@ -193,11 +220,12 @@ export default class ModalShoppingList extends TranslatedComponent {
       "version":1,
       "name":ship.name, // TO-DO: Import build name and put that here correctly
       "items": blueprints
-    }      
-    
+    }
+
     let JSONString = JSON.stringify(baseJson)
+    console.log(JSONString)
     let deflated = zlib.deflateSync(JSONString)
-    
+
     //actually encode
     let link = base64url.encode(deflated)
     link = "edomh://coriolis/?" + link;
@@ -219,33 +247,36 @@ export default class ModalShoppingList extends TranslatedComponent {
         if (!module.m.blueprint.grade || !module.m.blueprint.grades) {
           continue;
         }
-        for (const g in module.m.blueprint.grades) {
+        for (let g in module.m.blueprint.grades) {
           if (!module.m.blueprint.grades.hasOwnProperty(g)) {
             continue;
           }
-          if (g > module.m.blueprint.grade) {
+          // Ignore grades higher than the grade selected
+          if (Number(g) > module.m.blueprint.grade) {
             continue;
           }
-          for (const i in module.m.blueprint.grades[g].components) {
+          for (let i in module.m.blueprint.grades[g].components) {
             if (!module.m.blueprint.grades[g].components.hasOwnProperty(i)) {
               continue;
             }
+            console.log("Grade: " + g + " Component: " + i + " Amount: " + module.m.blueprint.grades[g].components[i] + " Rolls: " + this.state.matsPerGrade[g])
             if (mats[i]) {
               mats[i] += module.m.blueprint.grades[g].components[i] * this.state.matsPerGrade[g];
             } else {
               mats[i] = module.m.blueprint.grades[g].components[i] * this.state.matsPerGrade[g];
             }
+            console.log(mats[i])
           }
-          if (module.m.blueprint.special) {
-            for (const j in module.m.blueprint.special.components) {
-              if (!module.m.blueprint.special.components.hasOwnProperty(j)) {
-                continue;
-              }
-              if (mats[j]) {
-                mats[j] += module.m.blueprint.special.components[j];
-              } else {
-                mats[j] = module.m.blueprint.special.components[j];
-              }
+        }
+        if (module.m.blueprint.special) {
+          for (const j in module.m.blueprint.special.components) {
+            if (!module.m.blueprint.special.components.hasOwnProperty(j)) {
+              continue;
+            }
+            if (mats[j]) {
+              mats[j] += module.m.blueprint.special.components[j];
+            } else {
+              mats[j] = module.m.blueprint.special.components[j];
             }
           }
         }
@@ -303,7 +334,7 @@ export default class ModalShoppingList extends TranslatedComponent {
     this.sendToEDOMH = this.sendToEDOMH.bind(this);
     return <div className='modal' onClick={ (e) => e.stopPropagation() }>
       <h2>{translate('PHRASE_SHOPPING_MATS')}</h2>
-      <label>{translate('Grade 1 rolls ')}</label>
+      {/* <label>{translate('Grade 1 rolls ')}</label>
       <input id={1} type={'number'} min={0} defaultValue={this.state.matsPerGrade[1]} onChange={this.changeHandler} />
       <br/>
       <label>{translate('Grade 2 rolls ')}</label>
@@ -316,20 +347,26 @@ export default class ModalShoppingList extends TranslatedComponent {
       <input id={4} type={'number'} min={0} value={this.state.matsPerGrade[4]} onChange={this.changeHandler} />
       <br/>
       <label>{translate('Grade 5 rolls ')}</label>
-      <input id={5} type={'number'} min={0} value={this.state.matsPerGrade[5]} onChange={this.changeHandler} />
+      <input id={5} type={'number'} min={0} value={this.state.matsPerGrade[5]} onChange={this.changeHandler} /> */}
       <div>
         <textarea className='cb json' readOnly value={this.state.matsList} />
       </div>
-      <label hidden={!compatible} className={'l cap'}>{translate('CMDR Name')}</label>
-      <br/>
-      <select hidden={!compatible} className={'cmdr-select l cap'} onChange={this.cmdrChangeHandler} defaultValue={this.state.cmdrName}>
-        {this.state.cmdrs.map(e => <option key={e}>{e}</option>)}
-      </select>
-      <br/>
-      <p hidden={!this.state.failed} id={'failed'} className={'l'}>{translate('PHRASE_FAIL_EDENGINEER')}</p>
       <p hidden={compatible} id={'browserbad'} className={'l'}>{translate('PHRASE_FIREFOX_EDENGINEER')}</p>
-      <button className={'l cb dismiss cap'} disabled={!!this.state.failed || !compatible} onClick={this.sendToEDEng}>{translate('Send to EDEngineer')}</button>
-      <button style={{marginTop: 5}} className={'l cb dismiss cap'} disabled={!!this.state.failed} onClick={this.sendToEDOMH}>{translate('Send to EDOMH')}</button>
+      <p hidden={!this.state.failed} id={'failed'} className={'l'}>{translate('PHRASE_FAILED_TO_FIND_EDENGINEER')}</p>
+      <div id='edengineer' display={this.display} hidden={!!this.state.failed && !compatible}>
+        <label hidden={!compatible || !!this.state.failed} className={'l cap'}>{translate('CMDR Name')}</label>
+        <br/>
+        <select hidden={!compatible || !!this.state.failed} className={'cmdr-select l cap'} onChange={this.cmdrChangeHandler} defaultValue={this.state.cmdrName}>
+          {this.state.cmdrs.map(e => <option key={e}>{e}</option>)}
+        </select>
+        <br/>
+          <button className={'l cb dismiss cap'} hidden={!this.state.failed} disabled={!!this.state.failed || !compatible} onClick={this.sendToEDEng}>{translate('Send to EDEngineer')}</button>
+      </div>
+      <div id='edomh'>
+        <p>{translate('PHRASE_ENSURE_EDOMH')}</p>
+        <button style={{marginTop: 5}} className={'l cb dismiss cap'} onClick={this.sendToEDOMH}>{translate('Send to EDOMH')}</button>
+      </div>
+
       <button className={'r dismiss cap'} onClick={this.context.hideModal}>{translate('close')}</button>
     </div>;
   }
