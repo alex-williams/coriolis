@@ -247,33 +247,36 @@ export default class ModalShoppingList extends TranslatedComponent {
         if (!module.m.blueprint.grade || !module.m.blueprint.grades) {
           continue;
         }
-        for (const g in module.m.blueprint.grades) {
+        for (let g in module.m.blueprint.grades) {
           if (!module.m.blueprint.grades.hasOwnProperty(g)) {
             continue;
           }
-          if (g > module.m.blueprint.grade) {
+          // Ignore grades higher than the grade selected
+          if (Number(g) > module.m.blueprint.grade) {
             continue;
           }
-          for (const i in module.m.blueprint.grades[g].components) {
+          for (let i in module.m.blueprint.grades[g].components) {
             if (!module.m.blueprint.grades[g].components.hasOwnProperty(i)) {
               continue;
             }
+            console.log("Grade: " + g + " Component: " + i + " Amount: " + module.m.blueprint.grades[g].components[i] + " Rolls: " + this.state.matsPerGrade[g])
             if (mats[i]) {
               mats[i] += module.m.blueprint.grades[g].components[i] * this.state.matsPerGrade[g];
             } else {
               mats[i] = module.m.blueprint.grades[g].components[i] * this.state.matsPerGrade[g];
             }
+            console.log(mats[i])
           }
-          if (module.m.blueprint.special) {
-            for (const j in module.m.blueprint.special.components) {
-              if (!module.m.blueprint.special.components.hasOwnProperty(j)) {
-                continue;
-              }
-              if (mats[j]) {
-                mats[j] += module.m.blueprint.special.components[j];
-              } else {
-                mats[j] = module.m.blueprint.special.components[j];
-              }
+        }
+        if (module.m.blueprint.special) {
+          for (const j in module.m.blueprint.special.components) {
+            if (!module.m.blueprint.special.components.hasOwnProperty(j)) {
+              continue;
+            }
+            if (mats[j]) {
+              mats[j] += module.m.blueprint.special.components[j];
+            } else {
+              mats[j] = module.m.blueprint.special.components[j];
             }
           }
         }
@@ -331,7 +334,7 @@ export default class ModalShoppingList extends TranslatedComponent {
     this.sendToEDOMH = this.sendToEDOMH.bind(this);
     return <div className='modal' onClick={ (e) => e.stopPropagation() }>
       <h2>{translate('PHRASE_SHOPPING_MATS')}</h2>
-      <label>{translate('Grade 1 rolls ')}</label>
+      {/* <label>{translate('Grade 1 rolls ')}</label>
       <input id={1} type={'number'} min={0} defaultValue={this.state.matsPerGrade[1]} onChange={this.changeHandler} />
       <br/>
       <label>{translate('Grade 2 rolls ')}</label>
@@ -344,7 +347,7 @@ export default class ModalShoppingList extends TranslatedComponent {
       <input id={4} type={'number'} min={0} value={this.state.matsPerGrade[4]} onChange={this.changeHandler} />
       <br/>
       <label>{translate('Grade 5 rolls ')}</label>
-      <input id={5} type={'number'} min={0} value={this.state.matsPerGrade[5]} onChange={this.changeHandler} />
+      <input id={5} type={'number'} min={0} value={this.state.matsPerGrade[5]} onChange={this.changeHandler} /> */}
       <div>
         <textarea className='cb json' readOnly value={this.state.matsList} />
       </div>
