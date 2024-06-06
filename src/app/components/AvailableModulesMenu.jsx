@@ -322,7 +322,7 @@ export default class AvailableModulesMenu extends TranslatedComponent {
     for (let i = 0; i < sortedModules.length; i++) {
       let m = sortedModules[i];
       // If m.grp is mh or mm, or m.symbol contains 'Missing' skip it
-      if (m.grp == 'mh' || m.grp == 'mm' || m.symbol.includes("Missing")) {
+      if (m.grp == 'mh' || m.grp == 'mm' || (typeof(m.symbol) !== 'undefined' && m.symbol.includes("Missing"))) {
         // If this is a missing module, skip it
         continue;
       }
