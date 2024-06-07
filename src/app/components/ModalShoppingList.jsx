@@ -12,7 +12,8 @@ const base64url = require('base64url');
 export default class ModalShoppingList extends TranslatedComponent {
 
   static propTypes = {
-    ship: PropTypes.object.isRequired
+    ship: PropTypes.object.isRequired,
+    buildName: PropTypes.string
   };
 
   /**
@@ -156,6 +157,7 @@ export default class ModalShoppingList extends TranslatedComponent {
   sendToEDOMH(event) {
     event.preventDefault();
     const ship = this.props.ship;
+    const buildName = this.props.buildName;
     let blueprints = [];
 
     //create the json
@@ -215,15 +217,18 @@ export default class ModalShoppingList extends TranslatedComponent {
       }
     }
 
+    let shipName = buildName + " - " + ship.name;
+
     //create JSON to encode
     let baseJson = {
       "version":1,
-      "name":ship.name, // TO-DO: Import build name and put that here correctly
+      "name": shipName, // TO-DO: Import build name and put that here correctly
       "items": blueprints
     }
 
     let JSONString = JSON.stringify(baseJson)
     console.log(JSONString)
+    console.log(ship)
     let deflated = zlib.deflateSync(JSONString)
 
     //actually encode
@@ -332,6 +337,7 @@ export default class ModalShoppingList extends TranslatedComponent {
     this.sendToEDOMH = this.sendToEDOMH.bind(this);
     return <div className='modal' onClick={ (e) => e.stopPropagation() }>
       <h2>{translate('PHRASE_SHOPPING_MATS')}</h2>
+      <p>{translate('PHRASE_DIFFERENT_ROLLS')}</p>
       {/* <label>{translate('Grade 1 rolls ')}</label>
       <input id={1} type={'number'} min={0} defaultValue={this.state.matsPerGrade[1]} onChange={this.changeHandler} />
       <br/>
