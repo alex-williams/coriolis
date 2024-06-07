@@ -5,6 +5,9 @@ name: Auto-Deploy
 # Controls when the action will run. Workflow runs when the alpha branch receives a push event
 on:
   workflow_dispatch:
+    inputs:
+      tags:
+        description: "Manually Run Workflow"
   push:
     branches:
       - alpha
