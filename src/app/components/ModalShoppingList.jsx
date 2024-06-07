@@ -151,6 +151,34 @@ export default class ModalShoppingList extends TranslatedComponent {
   }
 
   /**
+   * Fix issues with the item name for bulkheads when sending to EDOMH
+   * @param {*} ship Ship object
+   * @param {*} item Item name
+   * @returns updated item name
+   */
+  fixArmourItemNameForEDOMH(ship, item) {
+    // The module blueprint fdname contains "Armour_" it's a bulkhead and we need to pre-populate the item field with the correct name from the ship object
+    switch (ship.bulkheads.m.name){
+      case "Lightweight Alloy":
+        item = ship.id + "_Armour_Grade1";
+        break;
+      case "Reinforced Alloy":
+        item = ship.id + "_Armour_Grade2";
+        break;
+      case "Military Grade Composite":
+        item = ship.id + "_Armour_Grade3";
+        break;
+      case "Mirrored Surface Composite":
+        item = ship.id + "_Armour_Mirrored";
+        break;
+      case "Reactive Surface Composite":
+        item = ship.id + "_Armour_Reactive";
+        break;
+    }
+    return item;
+  }
+
+  /**
  * Send all blueprints to EDOMH. This is a modified copy of registerBPs because this.state.blueprints was empty when I tried to modify sendToEDEng and I couldn't figure out why
  * @param {Event} event React event
  */
@@ -170,8 +198,17 @@ export default class ModalShoppingList extends TranslatedComponent {
           continue;
         }
         if (module.m.blueprint.special) {
+          let item = "";
+          // If the module blueprint fdname contains "Armour_" it's a bulkhead and we need to pre-populate the item field with the correct name from the ship object
+          if (module.m.blueprint.fdname.includes("Armour_")) {
+            item = this.fixArmourItemNameForEDOMH(ship, item)
+          }
+          else {
+            item = module.m.symbol;
+          }
+
           blueprints.push({
-            "item": module.m.symbol,
+            "item": item,
             "blueprint": module.m.blueprint.special.edname
           });
         }
@@ -186,23 +223,7 @@ export default class ModalShoppingList extends TranslatedComponent {
           let item = "";
           // If the module blueprint fdname contains "Armour_" it's a bulkhead and we need to pre-populate the item field with the correct name from the ship object
           if (module.m.blueprint.fdname.includes("Armour_")) {
-            switch (ship.bulkheads.m.name){
-              case "Lightweight Alloy":
-                item = ship.id + "_Armour_Grade1";
-                break;
-              case "Reinforced Alloy":
-                item = ship.id + "_Armour_Grade2";
-                break;
-              case "Military Grade Composite":
-                item = ship.id + "_Armour_Grade3";
-                break;
-              case "Mirrored Surface Composite":
-                item = ship.id + "_Armour_Mirrored";
-                break;
-              case "Reactive Surface Composite":
-                item = ship.id + "_Armour_Reactive";
-                break;
-            }
+            item = this.fixArmourItemNameForEDOMH(ship, item)
           }
           else {
             item = module.m.symbol;
