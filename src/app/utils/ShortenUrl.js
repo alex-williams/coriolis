@@ -17,7 +17,7 @@ if (!agent) {
  * @param  {function} error     Failure/Error callback
  */
 export default function shorternUrl(url, success, error) {
-  orbisShorten(url, success, error);
+  shortenUrlHollowpoint(url, success, error);
 }
 
 const SHORTEN_API_GOOGLE = 'https://www.googleapis.com/urlshortener/v1/url?key=';
@@ -95,6 +95,40 @@ function orbisShorten(url, success, error) {
           } else {
             success(response.body.shorturl);
           }
+        });
+    } catch (e) {
+      console.log(e);
+      error(e.message ? e.message : e);
+    }
+  } else {
+    error('Not Online');
+  }
+}
+
+const SHORTEN_API_HOLLOWPOINT = 'https://s.hollowpoint.rocks/shorten/';
+/**
+ * Shorten URL's for orbis.hollowpoint.rocks hosted version
+ * @param  {string} url        The URL to shorten
+ * @param  {function} success   Success callback
+ * @param  {function} error     Failure/Error callback
+ */
+function shortenUrlHollowpoint(url, success, error) {
+  if (window.navigator.onLine) {
+    try {
+      fetch(SHORTEN_API_HOLLOWPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: url }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          success(data.shorturl);
+        })
+        .catch((err) => {
+          console.error(err);
+          error('Bad Request');
         });
     } catch (e) {
       console.log(e);
