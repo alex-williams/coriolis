@@ -114,17 +114,19 @@ const SHORTEN_API_HOLLOWPOINT = 'https://s.hollowpoint.rocks/shorten/';
  */
 function shortenUrlHollowpoint(url, success, error) {
   if (window.navigator.onLine) {
+    url = url.replace('http://', '');
+    url = url.replace('https://', '');
     try {
       fetch(SHORTEN_API_HOLLOWPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url: url }),
+        body: JSON.stringify({ "url": url }),
       })
         .then((response) => response.json())
         .then((data) => {
-          success(data.shorturl);
+          success('https://s.hollowpoint.rocks/' + data);
         })
         .catch((err) => {
           console.error(err);
