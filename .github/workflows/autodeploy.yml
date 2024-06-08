@@ -1,6 +1,6 @@
 # This is a basic deployment workflow triggered by pushes to the alpha branch.
 
-name: Auto-Deploy
+name: Coriolis Auto-Deploy
 
 # Controls when the action will run. Workflow runs when the alpha branch receives a push event
 on:
@@ -13,45 +13,21 @@ on:
     branches:
       - alpha
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: self-hosted
     steps:
       - shell: bash
         run: |
           rm -Rf ./coriolis
           rm -Rf ./coriolis-data
-          git clone https://github.com/alex-williams/coriolis.git --single-branch --branch alpha
-          git clone https://github.com/alex-williams/coriolis-data.git --single-branch --branch alpha
+          git clone https://github.com/Brighter-Applications/coriolis.git --single-branch --branch alpha
+          git clone https://github.com/Brighter-Applications/coriolis-data.git --single-branch --branch alpha
           cd coriolis-data
           npm install
           npm start
           cd ../coriolis
           npm install
           npm run build
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload entire build directory
-          path: './coriolis/build/'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          sudo -u www-data cp -r ./build/* /var/www/orbis.hollowpoint.rocks/
