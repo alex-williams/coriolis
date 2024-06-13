@@ -25,4 +25,4 @@ jobs:
           cd ../coriolis
           npm install
           npm run build
-          sudo -u www-data cp -r ./build/* /var/www/newdisk/beta.coriolis.io/
+          sudo -u www-data cp -r ./build/* /var/www/beta.coriolis.io/
