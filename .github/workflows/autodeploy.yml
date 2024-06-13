@@ -21,6 +21,8 @@ jobs:
           git clone https://github.com/Brighter-Applications/coriolis.git --single-branch --branch beta
           git clone https://github.com/Brighter-Applications/coriolis-data.git --single-branch --branch beta
           cd coriolis-data
+          export NVM_DIR=~/.nvm
+          source ~/.nvm/nvm.sh
           npm install
           cd ../coriolis
           npm install
