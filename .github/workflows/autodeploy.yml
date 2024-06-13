@@ -1,0 +1,30 @@
+# This is a basic deployment workflow triggered by pushes to the alpha branch.
+
+name: Auto-Deploy 'live' Branch to coliolis.io
+
+# Controls when the action will run. Workflow runs when the alpha branch receives a push event
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - live
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  downloadcode:
+    runs-on: self-hosted
+    steps:
+      - shell: bash
+        run: |
+          rm -Rf ./coriolis
+          rm -Rf ./coriolis-data
+          git clone https://github.com/Brighter-Applications/coriolis.git --single-branch --branch live
+          git clone https://github.com/Brighter-Applications/coriolis-data.git --single-branch --branch live
+          cd coriolis-data
+          export NVM_DIR=~/.nvm
+          source ~/.nvm/nvm.sh
+          npm install
+          cd ../coriolis
+          npm install
+          npm run build
+          sudo -u www-data cp -r ./build/* /var/www/coriolis.io/
