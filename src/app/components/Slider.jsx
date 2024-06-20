@@ -123,16 +123,16 @@ export default class Slider extends React.Component {
   /**
    * Touch start handler
    * @param  {Event} event  DOM Event
-   * 
+   *
    */
   _touchstart(event) {
     this.touchStartTimer = setTimeout(() => this.sliderInputBox._setDisplay('block'), 1500);
   }
-  
+
   /**
    * Touch end handler
    * @param  {Event} event  DOM Event
-   * 
+   *
    */
   _touchend(event) {
     this.sliderInputBox.sliderVal.focus();
@@ -212,7 +212,7 @@ export default class Slider extends React.Component {
     let margin = MARGIN_LR * scale;
     let width = outerWidth - (margin * 2);
     let pctPos = width * this.props.percent;
-    return <div><svg 
+    return <div><svg
       onMouseUp={this._up} onMouseEnter={this._enter.bind(this)} onMouseMove={this._move} onKeyUp={this._keyup} onKeyDown={this._keydown} style={style} ref={node => this.node = node} tabIndex="0">
       <rect className='primary' style={{ opacity: 0.3 }} x={margin} y='0.25em' rx='0.3em' ry='0.3em' width={width} height='0.7em' />
       <rect className='primary-disabled' x={margin} y='0.45em' rx='0.15em' ry='0.15em' width={pctPos} height='0.3em' />
@@ -276,7 +276,7 @@ class TextInputBox extends React.Component {
    */
   componentDidUpdate(prevProps, prevState) {
     if (prevState.divStyle.display == 'none' && this.state.divStyle.display == 'block') {
-      this.enterTimer = setTimeout(() => this.sliderVal.focus(), 10);  
+      this.enterTimer = setTimeout(() => this.sliderVal.focus(), 10);
     }
     if (prevProps.max !== this.props.max && this.state.inputValue > this.props.max) {
       // they chose a different module
@@ -287,14 +287,14 @@ class TextInputBox extends React.Component {
     }
   }
   /**
-   * Set initial state for the textbox. 
-   * We may want to rethink this to 
+   * Set initial state for the textbox.
+   * We may want to rethink this to
    * try and make it a stateless component
    * @returns {object} React state object with initial values set
    */
   _getInitialState() {
     return {
-      divStyle: { display:'none' }, 
+      divStyle: { display:'none' },
       inputStyle: { width:'4em' },
       labelStyle: { marginLeft: '.1em' },
       maxLength:5,
@@ -307,7 +307,7 @@ class TextInputBox extends React.Component {
     };
   }
   /**
-   * 
+   *
    * @param {string} val block or none
    */
   _setDisplay(val) {
@@ -339,7 +339,7 @@ class TextInputBox extends React.Component {
   }
   /**
    * Get the value in the text box
-   * @returns {number} inputValue Value of the input box 
+   * @returns {number} inputValue Value of the input box
    */
   _getValue() {
     return this.state.inputValue;
@@ -348,7 +348,7 @@ class TextInputBox extends React.Component {
    * Update and set limits on input box
    * values depending on what user
    * has selected
-   * 
+   *
    * @param {SyntheticEvent} event ReactJs onChange event
    */
   _handleChange(event) {
