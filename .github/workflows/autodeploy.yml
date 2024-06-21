@@ -29,6 +29,7 @@ jobs:
           source ~/.nvm/nvm.sh
           echo "Building coriolis-data dist for branch ${BRANCH_NAME}" >> "$GITHUB_OUTPUT"
           npm install
+          npm start
           cd ../coriolis
           echo "Building coriolis for branch ${BRANCH_NAME}" >> "$GITHUB_OUTPUT"
           npm install
