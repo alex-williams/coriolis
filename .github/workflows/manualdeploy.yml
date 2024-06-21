@@ -27,12 +27,20 @@ jobs:
           rm -Rf ./coriolis-data
           git clone https://github.com/Brighter-Applications/coriolis.git --single-branch --branch ${{ github.events.inputs.branch }}
           git clone https://github.com/Brighter-Applications/coriolis-data.git --single-branch --branch ${{ github.events.inputs.branch }}
+  buildcode:
+    runs-on: self-hosted
+    steps:
+      - shell: bash
+        run: |
           cd coriolis-data
           export NVM_DIR=~/.nvm
           source ~/.nvm/nvm.sh
-          npm install
           npm start
           cd ../coriolis
-          npm install
           npm run build
+  movecode:
+    runs-on: self-hosted
+    steps:
+      - shell: bash
+        run: |
           if [ ${{ github.events.inputs.branch }} == "beta" ]; then sudo -u www-data cp -r ./build/* /var/www/beta.coriolis.io/; else sudo -u www-data cp -r ./build/* /var/www/coriolis.io/; fi
