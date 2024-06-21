@@ -1,6 +1,6 @@
-# This is a basic deployment workflow triggered by pushes to the alpha branch.
+# This is a basic deployment workflow triggered by pushes to the beta and live branches.
 
-name: Auto-Deploy 'beta' Branch to beta.coliolis.io
+name: Auto-Deploy 'beta/live' Branch to beta.coliolis.io or coriolis.io
 
 # Controls when the action will run. Workflow runs when the alpha branch receives a push event
 on:
@@ -8,7 +8,10 @@ on:
   push:
     branches:
       - beta
-
+      - live
+# Figure out the target branch name
+env:
+  BRANCH_NAME: ${{ github.base_ref || github.ref_name }}
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   downloadcode:
