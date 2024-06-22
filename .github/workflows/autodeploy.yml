@@ -39,6 +39,7 @@ jobs:
       - name: Zip the code
         shell: bash
         run: |
+
           zip -r ./${TARGET_ZIP} ./coriolis/build/*
       - name: Authorize GCP
         uses: google-github-actions/auth@v2
@@ -73,14 +74,12 @@ jobs:
       - name: Download and unzip the build
         shell: bash
         run: |
-          rm -Rf ./build/
-          mkdir ./build/
           EXTENSION="${TARGET_ZIP##*.}"
           FILENAME="${TARGET_ZIP%.*}"
           LATEST_FILENAME="${FILENAME}_latest.${EXTENSION}"
-          gsutil cp gs://${{ secrets.CORIOLIS_GCP_TARGET_BUCKET }}/${{ env.BUCKET_FOLDER }}/${LATEST_FILENAME} ./build/${LATEST_FILENAME}
-          unzip ./build/${LATEST_FILENAME}
+          gsutil cp gs://${{ secrets.CORIOLIS_GCP_TARGET_BUCKET }}/${{ env.BUCKET_FOLDER }}/${LATEST_FILENAME} ${LATEST_FILENAME}
+          unzip .${LATEST_FILENAME}
       - name: Move the build to the web server
         shell: bash
         run: |
-          if [ ${{ env.BRANCH_NAME }} == "beta" ]; then sudo -u www-data cp -r ./build/* /var/www/beta.coriolis.io/; else sudo -u www-data cp -r ./build/* /var/www/coriolis.io/; fi
+          if [ ${{ env.BRANCH_NAME }} == "beta" ]; then sudo -u www-data cp -r ./coriolis/build/* /var/www/beta.coriolis.io/; else sudo -u www-data cp -r ./coriolis/build/* /var/www/coriolis.io/; fi
