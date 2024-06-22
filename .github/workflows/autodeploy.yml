@@ -39,8 +39,7 @@ jobs:
       - name: Zip the code
         shell: bash
         run: |
-          cd ../coriolis
-          zip -r ${TARGET_ZIP}.zip ./build/*
+          zip -r ${TARGET_ZIP} ./build/*
       - name: Authorize GCP
         uses: google-github-actions/auth@v2
         with:
