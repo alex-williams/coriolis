@@ -34,11 +34,11 @@ jobs:
           cd coriolis-data
           export NVM_DIR=~/.nvm
           source ~/.nvm/nvm.sh
-          npm install
+          npm install 2>&1
           npm start
           cd ../coriolis
-          npm install
-          npm run build
+          npm install 2>&1
+          npm run build 2>&1
       - name: Deploy the code
         shell: bash
         run: |
