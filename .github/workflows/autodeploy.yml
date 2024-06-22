@@ -73,12 +73,13 @@ jobs:
       - name: Download and unzip the build
         shell: bash
         run: |
+          rm -Rf ./build/
           mkdir ./build/
           EXTENSION="${TARGET_ZIP##*.}"
           FILENAME="${TARGET_ZIP%.*}"
           LATEST_FILENAME="${FILENAME}_latest.${EXTENSION}"
           gsutil cp gs://${{ secrets.CORIOLIS_GCP_TARGET_BUCKET }}/${{ env.BUCKET_FOLDER }}/${LATEST_FILENAME} ./build/${LATEST_FILENAME}
-          unzip ./build/${LATEST_FILENAME} -d ./build/
+          unzip ./build/${LATEST_FILENAME}
       - name: Move the build to the web server
         shell: bash
         run: |
