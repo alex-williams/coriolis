@@ -61,6 +61,15 @@ jobs:
     runs-on: webapp
     needs: build
     steps:
+      - name: Authorize GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.CORIOLIS_GCP_SA_KEY }}
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>=363.0.0'
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: Download and unzip the build
         shell: bash
         run: |
