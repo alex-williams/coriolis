@@ -74,7 +74,7 @@ jobs:
       - name: Download and unzip the build
         shell: bash
         run: |
-          rm ./*
+          rm -Rf ./*
           EXTENSION="${TARGET_ZIP##*.}"
           FILENAME="${TARGET_ZIP%.*}"
           LATEST_FILENAME="${FILENAME}_latest.${EXTENSION}"
