@@ -5,6 +5,7 @@ const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { InjectManifest } = require('workbox-webpack-plugin');
+const { max } = require('lodash');
 
 module.exports = merge(common, {
   // devtool: 'source-map',
@@ -15,12 +16,17 @@ module.exports = merge(common, {
   output: {
     globalObject: 'this'
   },
+  performance: {
+    hints: false,
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000
+  },
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
-        'src/.htaccess', 
-        'src/iframe.html', 
-        'src/xdLocalStoragePostMessageApi.min.js',  
+        'src/.htaccess',
+        'src/iframe.html',
+        'src/xdLocalStoragePostMessageApi.min.js',
         { from: 'src/schemas', to: 'schemas' },
         {
           from: 'src/images/logo/*',
@@ -42,11 +48,11 @@ module.exports = merge(common, {
     //   overwrite: true,
     //   appVersion: `${pkgJson.version}-${buildDate.toISOString()}`
     // }),
-    
+
     new InjectManifest({
       swSrc: './src/sw.js',
       swDest: 'service-worker.js'
     }),
-    
+
   ]
 });
