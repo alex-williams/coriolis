@@ -28,7 +28,7 @@ jobs:
       - name: Build the code
         shell: bash
         run: |
-          cd coriolis-data
+          cd ./coriolis-data
           export NVM_DIR=~/.nvm
           source ~/.nvm/nvm.sh
           npm install 2>&1
@@ -39,7 +39,7 @@ jobs:
       - name: Zip the code
         shell: bash
         run: |
-          zip -r ${TARGET_ZIP} ./build/*
+          zip -r ./${TARGET_ZIP} ./coriolis/build/*
       - name: Authorize GCP
         uses: google-github-actions/auth@v2
         with:
